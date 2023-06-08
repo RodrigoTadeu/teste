@@ -1,0 +1,14 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+  <div id="mainContent">
+    <h1>Upload de Arquivos</h1>
+    <div class="wifiIcon"></div>
+
+    <form method='POST' action='/upload_arquivo' enctype='multipart/form-data'>
+        <input type=file name=file >
+        <input type=submit value=Upload>
+    </form>
+
+  </div>
+{% endblock %}

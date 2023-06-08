@@ -1,0 +1,13 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+  <div id="mainContent">
+    <h1>{{ informacao}}</h1>
+    <div id="z">
+	<ul>
+          <li><a href="{{ url_for('index') }}">Voltar para Página Principal</a></li>
+	</ul>
+    </div>
+
+  </div>
+{% endblock %}

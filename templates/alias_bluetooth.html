@@ -1,0 +1,17 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+  <div id="mainContent">
+    <h1>Bluetooth Setup</h1>
+    <div class="wifiIcon"></div>
+
+    <form action="/nomeBluetooth" method=post>
+      <ul>
+        <li><label for="bluetooth">Escreva um nome para seu Bluetooth:</label></li>
+        <li><input type="text" name="bluetooth", class="wifiNetworkInputs"></li>
+
+        <input type="submit", class="wifiConnectButton">
+      </ul>
+    </form>
+  </div>
+{% endblock %}

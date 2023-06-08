@@ -1,0 +1,75 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+  <div id="mainContent">
+   <div class="box">
+
+    <div id=aliasBlu>
+	<ul>
+	    <li><a href="{{ url_for('alias_bluetooth') }}">Álias Bluetooth</a></li>
+	</ul>
+    </div>
+    <div id=upload>
+	<ul>
+	    <li><a href="{{ url_for('upload') }}">Upload de Arquivos</a></li>
+	</ul>
+    </div>
+
+   </div>
+
+    <h3>Conexão WiFi</h3>
+    <div class="wifiIcon"></div>
+
+    <form action="{{ url_for('save_credentials') }}" method=post>
+      <ul>
+        <li><label for="ssid">Selecione sua rede WiFi</label></li>
+
+        <li class="wifiNetwork">
+          <select id="ssid" name="ssid", class="wifiNetworkInputs">
+            {% for ssid in wifi_ap_array %}
+              <option value='{{ ssid }}'>{{ ssid }}</option>
+            {% endfor %}
+          </select>
+        </li>
+        <li><label for="wifi_key">Senha:</label></li>
+        <li><input type="password" name="wifi_key", class="wifiNetworkInputs"></li>
+
+        <input type="submit", class="wifiConnectButton">
+      </ul>
+    </form>
+    </br>
+
+    <form action="/ipFixo" method=post id="formIp">
+
+    	<input type="checkbox" name="checkbox" id="checkbox" value="checkbox" onclick="isChecked()">
+        <label for="checkbox" style="font-size:40px; padding-left:10px;">IP Estático</label>
+	<p style="margin-top:-5px; color:black; font-size:25px; font-weight:bold;">{{ ip }}</p>
+
+    	<div class="container">
+		<div>
+			<label for="address">Address:</label>
+			<input type="text" id="address" class="a" name="address" maxlength="15"/>
+        	</div>
+		<div>
+			<label for="broadcast">Broadcast:</label>
+		    	<input type="text" id="broadcast" class="a" name="broadcast" />
+            	</div>
+	    	<div>
+		    	<label for="netmask">Netmask:</label>
+		    	<input type="text" id="netmask" class="a" name="netmask" />
+            	</div>
+ 	    	<div>
+		    	<label for="gateway">Gateway:</label>
+		    	<input type="text" id="gateway" class="a" name="gateway" />
+            	</div>
+       	    	<div>
+		    	<label for="dns">Dns:</label>
+		    	<input type="text" id="dns" class="a" name="dns" />
+            	</div>
+
+		<button type="submit" class="btn_fixo">Aplicar</button>
+	</div>
+    </form>
+
+  </div>
+{% endblock %}
