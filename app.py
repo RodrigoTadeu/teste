@@ -110,5 +110,8 @@ def fixar_ip(address, broadcast, netmask, gateway, dns):
 def mudar_nome_bluetooth(alias):
     os.system('bluetoothctl system-alias ' +alias)
 
+def set_ap_client_mode():
+    os.system('reboot')
+
 if __name__ == '__main__':
     app.run(host = '0.0.0.0')
