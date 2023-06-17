@@ -27,6 +27,25 @@ def ipFixo():
     fixar_ip(address, broadcast, netmask, gateway, dns)
     return render_template('app.html', wifi_ap_array = wifi_ap_array, ip='Agora seu IP é '+ address)
 
+@app.route('/config_ap')
+def config_ap():
+    return render_template('config_ap.html')
+
+
+@app.route('/setar_ap', methods=['GET', 'POST'])
+def setar_ap():
+    nameAp = request.form.get('nameAp')
+    senhaAp=request.form.get('senhaAp')
+    info_ap(nameAp,senhaAp)
+
+    def sleep_and_start_ap():
+        time.sleep(2)
+        set_ap_client_mode()
+    t = Thread(target=sleep_and_start_ap)
+    t.start()
+    return render_template('save_wpa_credentials.html', ssid= nameAp, wpa_key = senhaAp)
+
+
 @app.route('/alias_bluetooth')
 def alias_bluetooth():
     return render_template('alias_bluetooth.html')
@@ -41,9 +60,8 @@ def setar_nome():
 def save_credentials():
     ssid = request.form['ssid']
     wifi_key = request.form['wifi_key']
-
     create_wpa_supplicant(ssid, wifi_key)
-    
+
     # Call set_ap_client_mode() in a thread otherwise the reboot will prevent
     # the response from getting to the browser
     def sleep_and_start_ap():
@@ -100,6 +118,12 @@ def create_wpa_supplicant(ssid, wifi_key):
     temp_conf_file.close
 
     os.system('mv wpa_supplicant.conf.tmp /etc/wpa_supplicant/wpa_supplicant.conf')
+
+def info_ap(nome,senha):
+    if not os.path.exists('/etc/default/bb-wl18xx.original'):
+        os.system('mv /etc/default/bb-wl18xx /etc/default/bb-wl18xx.original')
+    with open('/etc/default/bb-wl18xx', 'w') as arquivo:
+        arquivo.write('TETHER_ENABLED=yes\nUSE_CONNMAN_TETHER=no\nUSE_WL18XX_IP_PREFIX="192.168.8"\nUSE_INTERNAL_WL18XX_MAC_ADDRESS=yes\nUSE_WL18XX_POWER_MANAGMENT=off\nUSE_PERSONAL_SSID="'+nome+'"\nUSE_PERSONAL_PASSWORD="'+senha+'"\nUSE_GENERATED_DNSMASQ=yes\nUSE_GENERATED_HOSTAPD=yes\nUSE_APPENDED_SSID=yes')
 
 def fixar_ip(address, broadcast, netmask, gateway, dns):
     if not os.path.exists('/etc/network/interfaces.original'):
