@@ -34,9 +34,10 @@ def config_ap():
 
 @app.route('/setar_ap', methods=['GET', 'POST'])
 def setar_ap():
+    ap='yes'
     nameAp = request.form.get('nameAp')
     senhaAp=request.form.get('senhaAp')
-    info_ap(nameAp,senhaAp)
+    info_ap(ap,nameAp,senhaAp)
 
     def sleep_and_start_ap():
         time.sleep(2)
@@ -61,7 +62,10 @@ def save_credentials():
     ssid = request.form['ssid']
     wifi_key = request.form['wifi_key']
     create_wpa_supplicant(ssid, wifi_key)
-
+    ap='no'
+    nameAp='xxxxxx'
+    senhaAp='xxxxxxxx'
+    info_ap(ap,nameAp,senhaAp)
     # Call set_ap_client_mode() in a thread otherwise the reboot will prevent
     # the response from getting to the browser
     def sleep_and_start_ap():
@@ -119,11 +123,11 @@ def create_wpa_supplicant(ssid, wifi_key):
 
     os.system('mv wpa_supplicant.conf.tmp /etc/wpa_supplicant/wpa_supplicant.conf')
 
-def info_ap(nome,senha):
+def info_ap(ap,nome,senha):
     if not os.path.exists('/etc/default/bb-wl18xx.original'):
         os.system('mv /etc/default/bb-wl18xx /etc/default/bb-wl18xx.original')
     with open('/etc/default/bb-wl18xx', 'w') as arquivo:
-        arquivo.write('TETHER_ENABLED=yes\nUSE_CONNMAN_TETHER=no\nUSE_WL18XX_IP_PREFIX="192.168.8"\nUSE_INTERNAL_WL18XX_MAC_ADDRESS=yes\nUSE_WL18XX_POWER_MANAGMENT=off\nUSE_PERSONAL_SSID="'+nome+'"\nUSE_PERSONAL_PASSWORD="'+senha+'"\nUSE_GENERATED_DNSMASQ=yes\nUSE_GENERATED_HOSTAPD=yes\nUSE_APPENDED_SSID=yes')
+        arquivo.write('TETHER_ENABLED='+ap+'\nUSE_CONNMAN_TETHER=no\nUSE_WL18XX_IP_PREFIX="192.168.8"\nUSE_INTERNAL_WL18XX_MAC_ADDRESS=yes\nUSE_WL18XX_POWER_MANAGMENT=off\nUSE_PERSONAL_SSID="'+nome+'"\nUSE_PERSONAL_PASSWORD="'+senha+'"\nUSE_GENERATED_DNSMASQ=yes\nUSE_GENERATED_HOSTAPD=yes\nUSE_APPENDED_SSID=yes')
 
 def fixar_ip(address, broadcast, netmask, gateway, dns):
     if not os.path.exists('/etc/network/interfaces.original'):
