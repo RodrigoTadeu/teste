@@ -8,7 +8,7 @@ from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 app.debug = True
-UPLOAD_FOLDER = os.path.join(os.getcwd(), '/home/pi/RaspiWiFi/data')
+UPLOAD_FOLDER = os.path.join(os.getcwd(), '/home/debian/teste/data')
 
 @app.route('/')
 def index():
@@ -62,13 +62,18 @@ def save_credentials():
     ssid = request.form['ssid']
     wifi_key = request.form['wifi_key']
     create_wpa_supplicant(ssid, wifi_key)
-    ap='no'
+    """ap='no'
     nameAp='xxxxxx'
     senhaAp='xxxxxxxx'
-    info_ap(ap,nameAp,senhaAp)
+    info_ap(ap,nameAp,senhaAp)"""
     # Call set_ap_client_mode() in a thread otherwise the reboot will prevent
     # the response from getting to the browser
     def sleep_and_start_ap():
+        ap='no'
+        nameAp='xxxxxx'
+        senhaAp='xxxxxxxx'
+        info_ap(ap,nameAp,senhaAp)
+
         time.sleep(2)
         set_ap_client_mode()
     t = Thread(target=sleep_and_start_ap)
