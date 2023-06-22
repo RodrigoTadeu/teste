@@ -62,10 +62,6 @@ def save_credentials():
     ssid = request.form['ssid']
     wifi_key = request.form['wifi_key']
     create_wpa_supplicant(ssid, wifi_key)
-    """ap='no'
-    nameAp='xxxxxx'
-    senhaAp='xxxxxxxx'
-    info_ap(ap,nameAp,senhaAp)"""
     # Call set_ap_client_mode() in a thread otherwise the reboot will prevent
     # the response from getting to the browser
     def sleep_and_start_ap():
@@ -73,8 +69,8 @@ def save_credentials():
         nameAp='xxxxxx'
         senhaAp='xxxxxxxx'
         info_ap(ap,nameAp,senhaAp)
-
         time.sleep(2)
+        os.system('sudo systemctl mask wpa_supplicant')
         set_ap_client_mode()
     t = Thread(target=sleep_and_start_ap)
     t.start()
@@ -112,8 +108,7 @@ def scan_wifi_networks():
 def create_wpa_supplicant(ssid, wifi_key):
     temp_conf_file = open('wpa_supplicant.conf.tmp', 'w')
 
-    temp_conf_file.write('ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev\n')
-    temp_conf_file.write('\n')
+    temp_conf_file.write('ctrl_interface=/var/run/wpa_supplicant\nctrl_interface_group=0\nupdate_config=1\n')
     temp_conf_file.write('network={\n')
     temp_conf_file.write('	ssid="' + ssid + '"\n')
 
@@ -138,7 +133,7 @@ def fixar_ip(address, broadcast, netmask, gateway, dns):
     if not os.path.exists('/etc/network/interfaces.original'):
         os.system('mv /etc/network/interfaces /etc/network/interfaces.original')
     with open('/etc/network/interfaces', 'w') as arquivo:
-        arquivo.write('source /etc/network/interfaces.d/*\n\nauto lo\niface lo inet loopback\n\nallow-hotplug wlan0\niface wlan0 inet static\naddress ' +address +'\nbroadcast ' +broadcast +'\nnetmask ' +netmask +'\ngateway ' +gateway +'\ndns-nameservers ' +dns) 
+        arquivo.write('auto lo\niface lo inet loopback\n\nauto wlan0\niface wlan0 inet static\naddress ' +address +'\nbroadcast ' +broadcast +'\nnetmask ' +netmask +'\ngateway ' +gateway +'\ndns-nameservers ' +dns+'\nwpa-driver nl80211\nwpa-conf /etc/wpa_supplicant/wpa_supplicant.conf') 
 
 def mudar_nome_bluetooth(alias):
     os.system('bluetoothctl system-alias ' +alias)
