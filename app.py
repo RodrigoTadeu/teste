@@ -106,22 +106,10 @@ def scan_wifi_networks():
     return ap_array
 
 def create_wpa_supplicant(ssid, wifi_key):
-    temp_conf_file = open('wpa_supplicant.conf.tmp', 'w')
-
-    temp_conf_file.write('ctrl_interface=/var/run/wpa_supplicant\nctrl_interface_group=0\nupdate_config=1\n')
-    temp_conf_file.write('network={\n')
-    temp_conf_file.write('	ssid="' + ssid + '"\n')
-
-    if wifi_key == '':
-        temp_conf_file.write('	key_mgmt=NONE\n')
-    else:
-        temp_conf_file.write('	psk="' + wifi_key + '"\n')
-
-    temp_conf_file.write('	}')
-
-    temp_conf_file.close
-
-    os.system('mv wpa_supplicant.conf.tmp /etc/wpa_supplicant/wpa_supplicant.conf')
+    if not os.path.exists('/etc/network/interfaces.original'):
+        os.system('mv /etc/network/interfaces /etc/network/interfaces.original')
+    with open('/etc/network/interfaces', 'w') as arquivo:
+        arquivo.write('auto lo\niface lo inet loopback\n\nauto wlan0\niface wlan0 inet dhcp\n wpa-ssid "'+ssid+'"\n wpa-psk "'+wifi_key+'"')
 
 def info_ap(ap,nome,senha):
     if not os.path.exists('/etc/default/bb-wl18xx.original'):
